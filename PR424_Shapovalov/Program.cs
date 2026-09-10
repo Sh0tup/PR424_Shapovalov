@@ -11,7 +11,7 @@ namespace ISIP424_Shapovalov
 
     struct Expense
     {
-        public string Title;
+        public string Name;
         public double Price;
     }
 
@@ -20,9 +20,9 @@ namespace ISIP424_Shapovalov
         static void Main()
         {
 
-            Console.Write("Минимум 2, максимум 40,");
+            Console.Write("Минимум 2, максимум 40,\n");
             int n = Convert.ToInt32(Console.ReadLine());
-
+            +
             Expense[] expenses = new Expense[n];
 
             Console.WriteLine("[Название; Цена]");
@@ -33,14 +33,14 @@ namespace ISIP424_Shapovalov
                 string[] parts = Console.ReadLine().Split(';');
                 expenses[i] = new Expense
                 {
-                    Title = parts[0],
+                    Name = parts[0].Trim(),
                     Price = double.Parse(parts[1])
                 };
             }
 
             while (true)
             {
-                Console.WriteLine("\n1 - Вывод боссданных");
+                Console.WriteLine("\n1 - Вывод данных");
                 Console.WriteLine("2 - Статистика");
                 Console.WriteLine("3 - Сортировка по цене");
                 Console.WriteLine("4 - Конвертация валюты");
@@ -53,7 +53,7 @@ namespace ISIP424_Shapovalov
                 {
                     case "1":
                         for (int i = 0; i < n; i++)
-                            Console.WriteLine($"{expenses[i].Title} — {expenses[i].Price} руб.");
+                            Console.WriteLine($"{expenses[i].Name} — {expenses[i].Price} руб.");
                         break;
 
                     case "2":
@@ -82,9 +82,9 @@ namespace ISIP424_Shapovalov
                             for (int j = 0; j < n - i - 1; j++)
                                 if (expenses[j].Price > expenses[j + 1].Price)
                                 {
-                                    var temp = expenses[j];
+                                    var a = expenses[j];
                                     expenses[j] = expenses[j + 1];
-                                    expenses[j + 1] = temp;
+                                    expenses[j + 1] = a;
                                 }
                         Console.WriteLine("Готово");
                         break;
@@ -95,7 +95,7 @@ namespace ISIP424_Shapovalov
                         Console.WriteLine("конвертация выполнена");
 
                         foreach (var e in expenses)
-                            Console.WriteLine($"{e.Title}: {e.Price / rate}");
+                            Console.WriteLine($"{e.Name}: {e.Price / rate}");
                         break;
 
                     case "5":
@@ -103,8 +103,8 @@ namespace ISIP424_Shapovalov
                         string query = Console.ReadLine().ToLower();
 
                         foreach (var e in expenses)
-                            if (e.Title.ToLower().Contains(query))
-                                Console.WriteLine($"{e.Title} — {e.Price} руб.");
+                            if (e.Name.ToLower().Contains(query))
+                                Console.WriteLine($"{e.Name} — {e.Price} руб.");
                         break;
 
                     case "0":
