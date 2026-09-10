@@ -22,7 +22,7 @@ namespace ISIP424_Shapovalov
 
             Console.Write("Минимум 2, максимум 40,\n");
             int n = Convert.ToInt32(Console.ReadLine());
-            +
+
             Expense[] expenses = new Expense[n];
 
             Console.WriteLine("[Название; Цена]");
