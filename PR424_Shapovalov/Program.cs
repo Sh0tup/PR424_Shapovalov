@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 
-// Категории товаров, заданы прямо в коде
 enum Category
 {
     Електроника = 1,
@@ -11,14 +10,13 @@ enum Category
 
 class Product
 {
-    public string Code { get; private set; } // уникальный код, ставится автоматически
+    public string Code { get; private set; }
     public string Name { get; private set; }
     public double Price { get; private set; }
     public int Quantity { get; private set; }
     public Category Category { get; private set; }
 
-    // "Остался ли товар на складе" — вычисляется само, менять извне нельзя
-    public bool InStock
+    public bool InStock // осталось ли что-то
     {
         get
         {
@@ -45,6 +43,11 @@ class Product
     public void AddQuantity(int amount)
     {
         Quantity = Quantity + amount;
+    }
+
+    public void RemoveQuantity(int amount)
+    {
+        Quantity = Quantity - amount;
     }
 
     public bool Sell(int amount)
@@ -80,8 +83,8 @@ class Product
 
 class Program
 {
-    static List products = new List();
-    static int nextCode = 1; // коды начинаются с 1
+    static List<Product> products = new List<Product>();
+    static int nextCode = 1;
 
     static void Main()
     {
@@ -148,19 +151,12 @@ class Program
         Console.Write("Введите название: ");
         string name = Console.ReadLine();
 
-        if (name == null || name.Trim().Length == 0)
-        {
-            Console.WriteLine("Название не может быть пустым.");
-            return;
-        }
-
         Console.WriteLine("Введите цену: ");
         name = Console.ReadLine();
         double.TryParse(name, out double price);
         if (price < 0)
         {
-            Console.WriteLine("Цена не может быть отрицательной.");
-            return;
+            price = Math.Abs(price);
         }
 
         Console.WriteLine("Введите количество: ");
@@ -172,7 +168,9 @@ class Program
             return;
         }
 
-        Category category =;
+        Console.Write("Категория (1-Электроника, 2-Продукты, 3-Одежда): ");
+        Category category = (Category)int.Parse(Console.ReadLine());
+
         if (category == 0)
         {
             Console.WriteLine("Категория не выбрана.");
@@ -190,5 +188,133 @@ class Program
 
         Product product = new Product(code, name, price, quantity, category);
         products.Add(product);
+    }
+
+    public static void CommandDelete()
+    {
+        Console.Write("Введите код товара для удаления: ");
+        string code = Console.ReadLine();
+
+        int index = -1;
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].Code == code)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index == -1)
+        {
+            Console.WriteLine("Товар с таким кодом не найден.");
+            return;
+        }
+
+        Console.WriteLine($"Товар {products[index].Name} удалён.");
+        products.RemoveAt(index);
+    }
+
+    static void CommandSupply()
+    {
+        Console.Write("Введите код товара: ");
+        string code = Console.ReadLine();
+
+        int index = -1;
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].Code == code)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index == -1)
+        {
+            Console.WriteLine("Товар с таким кодом не найден.");
+            return;
+        }
+
+        Console.Write("Введите количество для поставки: ");
+        int amount = int.Parse(Console.ReadLine());
+
+        products[index].AddQuantity(amount);
+        Console.WriteLine($"Поставка добавлена.");
+    }
+
+    static void CommandSell()
+    {
+        Console.Write("Введите код товара: ");
+        string code = Console.ReadLine();
+
+        int index = -1;
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].Code == code)
+            {
+                index = i;
+                break;
+            }
+        }
+
+        if (index == -1)
+        {
+            Console.WriteLine("Товар с таким кодом не найден.");
+            return;
+        }
+
+        Console.Write("Введите количество для продажи: ");
+        int amount = int.Parse(Console.ReadLine());
+
+        if (products[index].Quantity < amount)
+        {
+            Console.WriteLine("Недостаточно товара на складе.");
+            return;
+        }
+
+        products[index].RemoveQuantity(amount);
+        double total = products[index].Price * amount;
+        Console.WriteLine($"Продано {amount} шт. на сумму {total}. Осталось: {products[index].Quantity}");
+    }
+
+    static void CommandSearch()
+    {
+        Console.Write("Введите код или название товара: ");
+        string query = Console.ReadLine();
+
+        bool found = false;
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            if (products[i].Code == query || products[i].Name == query)
+            {
+                Console.WriteLine($"Код: {products[i].Code}\nНазвание: {products[i].Name}\nЦена: {products[i].Price}\nКоличество: {products[i].Quantity}\nКатегория: {products[i].Category}"); found = true;
+            }
+        }
+
+        if (!found)
+        {
+            Console.WriteLine("Товар не найден.");
+        }
+    }
+
+    static void CommandShowAll()
+    {
+        if (products.Count == 0)
+        {
+            Console.WriteLine("Список товаров пуст.");
+            return;
+        }
+
+        Console.WriteLine("             СПИСОК ТОВАРОВ");
+
+        for (int i = 0; i < products.Count; i++)
+        {
+            Console.WriteLine($"{i + 1}. Код: {products[i].Code}\nНазвание: {products[i].Name}\nЦена: {products[i].Price}\nКоличество: {products[i].Quantity}\nКатегория: {products[i].Category}");
+        }
     }
 }
