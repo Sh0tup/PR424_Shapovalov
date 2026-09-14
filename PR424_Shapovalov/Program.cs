@@ -283,7 +283,7 @@ class Program
 
     static void CommandSearch()
     {
-        Console.Write("Введите код или название товара: ");
+        Console.Write("Введите код или название товара или категорию (1-Электроника, 2-Продукты, 3-Одежда): ");
         string query = Console.ReadLine();
 
         bool found = false;
