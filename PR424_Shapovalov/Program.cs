@@ -283,16 +283,17 @@ class Program
 
     static void CommandSearch()
     {
-        Console.Write("Введите код или название товара или категорию (1-Электроника, 2-Продукты, 3-Одежда): ");
+        Console.Write("Введите код или название товара или категорию (Электроника, Продукты, Одежда): ");
         string query = Console.ReadLine();
 
         bool found = false;
 
         for (int i = 0; i < products.Count; i++)
         {
-            if (products[i].Code == query || products[i].Name == query)
+            if (products[i].Code == query || products[i].Name == query || products[i].Category.ToString() == query)
             {
-                Console.WriteLine($"Код: {products[i].Code}\nНазвание: {products[i].Name}\nЦена: {products[i].Price}\nКоличество: {products[i].Quantity}\nКатегория: {products[i].Category}"); found = true;
+                products[i].PrintInfo();
+                found = true;
             }
         }
 
@@ -314,7 +315,7 @@ class Program
 
         for (int i = 0; i < products.Count; i++)
         {
-            Console.WriteLine($"{i + 1}. Код: {products[i].Code}\nНазвание: {products[i].Name}\nЦена: {products[i].Price}\nКоличество: {products[i].Quantity}\nКатегория: {products[i].Category}");
+            products[i].PrintInfo();
         }
     }
 }
