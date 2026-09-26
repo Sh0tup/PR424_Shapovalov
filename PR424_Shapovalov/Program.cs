@@ -50,16 +50,6 @@ class Product
         Quantity = Quantity - amount;
     }
 
-    public bool Sell(int amount)
-    {
-        if (amount > Quantity)
-        {
-            return false;
-        }
-        Quantity = Quantity - amount;
-        return true;
-    }
-
     public void PrintInfo()
     {
         string stockText;
@@ -311,7 +301,7 @@ class Program
             return;
         }
 
-        Console.WriteLine("             СПИСОК ТОВАРОВ");
+        Console.WriteLine("           СПИСОК ТОВАРОВ");
 
         for (int i = 0; i < products.Count; i++)
         {
