@@ -45,8 +45,14 @@ class Program
     static List<Product> products = new List<Product>();
     static int nextCode = 1;
 
+
     static void Main()
     {
+        AddProduct("Война и мир", "Лев Толстой", 1869, 1200, Category.Фантастика);
+        AddProduct("Анна Каренина", "Лев Толстой", 1877, 950, Category.Детектив);
+        AddProduct("Воскресение", "Лев Толстой", 1899, 800, Category.Фантастика);
+        AddProduct("Преступление и наказание", "Фёдор Достоевский", 1866, 1100, Category.Детектив);
+        AddProduct("Идиот", "Фёдор Достоевский", 1869, 1000, Category.Ужасы);
 
         while (true)
         {
@@ -125,8 +131,7 @@ class Program
         }
 
         Console.WriteLine("Введите цену: ");
-        name = Console.ReadLine();
-        int.TryParse(name, out int price);
+        int.TryParse(Console.ReadLine(), out int price);
         if (price < 0)
         {
             Console.WriteLine("Цена не может быть отрицательной.");
@@ -222,6 +227,7 @@ class Program
         var maxProduct = products.Max(x => x.Price);
         var minProduct = products.Min(x => x.Price);
         Console.WriteLine("Минимально стоящая книга: ");
+        products.First(m=>m.Price > maxProduct).PrintInfo();
         foreach (var product in products)
         {
             if (product.Price == maxProduct || product.Price == minProduct)
