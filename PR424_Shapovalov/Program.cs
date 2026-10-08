@@ -2,265 +2,389 @@
 using System.Collections.Generic;
 using System.Linq;
 
-enum Category
+class Student
 {
-    Фантастика = 1,
-    Детектив = 2,
-    Ужасы = 3
-}
+    public int Code { get; set; }
 
-class Product
-{
-    public string Code { get; private set; }
-    public string Name { get; private set; }
-    public string Author { get; private set; }
-    public int Year { get; private set; }
-    public int Price { get; private set; }
-    public Category Category { get; private set; }
+    private string Name;
+    private string LastName;
+    private int YearEnrollment;
 
-   
-    public Product(string code, string name, string author, int year, int price, Category category)
+    public string name
+    {
+        get { return Name; }
+        set { if (value.Length > 0) Name = value; }
+    }
+
+    public string lastname
+    {
+        get { return LastName; }
+        set { if (value.Length > 0) LastName = value; }
+    }
+
+    public int yearenrollment
+    {
+        get { return YearEnrollment; }
+        set { if (2027 - value <= 6 && value <= 2027) YearEnrollment = value; }
+    }
+
+    public List<Course> Courses = new List<Course>();
+
+    public Student(int code, string name, string lastname, int yearenrollment)
     {
         Code = code;
         Name = name;
-        Author = author;
-        Price = price;
-        Year = year;
-        Category = category;
+        LastName = lastname;
+        YearEnrollment = yearenrollment;
+    }
+
+    public void Enroll(Course course)
+    {
+        if (!Courses.Contains(course))
+        {
+            Courses.Add(course);
+            course.Students.Add(this);
+        }
     }
 
     public void PrintInfo()
     {
         Console.WriteLine("Код: " + Code);
-        Console.WriteLine("Название: " + Name);
-        Console.WriteLine("Автор: " + Author);
-        Console.WriteLine("Год издания: " + Year);
-        Console.WriteLine("Цена: " + Price);
-        Console.WriteLine("Жанр: " + Category);
+        Console.WriteLine("Имя: " + Name);
+        Console.WriteLine("Фамилия: " + LastName);
+        Console.WriteLine("Год зачисления: " + YearEnrollment);
+        Console.WriteLine("Записан на курсов: " + Courses.Count);
+    }
+}
+
+class Teacher
+{
+    public int Id { get; set; }
+
+    private string Name;
+    private string LastName;
+    private string Department;
+
+    public string name
+    {
+        get { return Name; }
+        set { if (value.Length > 0) Name = value; }
+    }
+
+    public string lastname
+    {
+        get { return LastName; }
+        set { if (value.Length > 0) LastName = value; }
+    }
+
+    public string department
+    {
+        get { return Department; }
+        set { if (value.Length > 0) Department = value; }
+    }
+
+    public List<Course> Courses = new List<Course>();
+
+    public Teacher(int id, string name, string lastname, string department)
+    {
+        Id = id;
+        Name = name;
+        LastName = lastname;
+        Department = department;
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine("Id: " + Id);
+        Console.WriteLine("Имя: " + Name);
+        Console.WriteLine("Фамилия: " + LastName);
+        Console.WriteLine("Кафедра: " + Department);
+        Console.WriteLine("Ведёт курсов: " + Courses.Count);
+    }
+}
+
+class Course
+{
+    private static int nextId = 1;
+
+    public int Id { get; set; }
+
+    private string Title;
+    public Teacher Teacher;
+
+    public string title
+    {
+        get { return Title; }
+        set { if (value.Length > 0) Title = value; }
+    }
+
+    public List<Student> Students = new List<Student>();
+
+    public Course(string title)
+    {
+        Id = nextId++;
+        Title = title;
+    }
+    public void AssignTeacher(Teacher teacher)
+    {
+        Teacher = teacher;
+        if (!teacher.Courses.Contains(this))
+            teacher.Courses.Add(this);
+    }
+
+    public void PrintInfo()
+    {
+        Console.WriteLine("Id курса: " + Id);
+        Console.WriteLine("Название: " + Title);
+        Console.WriteLine("Преподаватель: " + (Teacher != null ? Teacher.name + " " + Teacher.lastname : "не назначен"));
+        Console.WriteLine("Записано студентов: " + Students.Count);
+    }
+}
+
+class University
+{
+    public List<Student> Students = new List<Student>();
+    public List<Teacher> Teachers = new List<Teacher>();
+    public List<Course> Courses = new List<Course>();
+
+    public Student FindStudent(int code) => Students.FirstOrDefault(s => s.Code == code);
+    public Teacher FindTeacher(int id) => Teachers.FirstOrDefault(t => t.Id == id);
+    public Course FindCourse(int id) => Courses.FirstOrDefault(c => c.Id == id);
+
+    public void PrintAllStudents()
+    {
+        if (Students.Count == 0) 
+        {
+            Console.WriteLine("Студентов нет.");
+            return;
+        }
+        foreach (var s in Students) 
+        { 
+            s.PrintInfo(); Console.WriteLine(); 
+        }
+    }
+
+    public void PrintAllTeachers()
+    {
+        if (Teachers.Count == 0) 
+        {
+            Console.WriteLine("Преподавателей нет.");
+            return;
+        }
+        foreach (var t in Teachers) 
+        {
+            t.PrintInfo(); Console.WriteLine(); 
+        }
+    }
+
+    public void PrintAllCourses()
+    {
+        if (Courses.Count == 0) 
+        {
+            Console.WriteLine("Курсов нет.");
+            return;
+        }
+        foreach (var c in Courses) 
+        {
+            c.PrintInfo(); Console.WriteLine();
+        }
+    }
+
+    public void PrintCoursesOfStudent(int code)
+    {
+        var s = FindStudent(code);
+        if (s == null) { Console.WriteLine("Студент не найден."); return; }
+        if (s.Courses.Count == 0) 
+        { 
+            Console.WriteLine("Студент не записан ни на один курс.");
+            return;
+        }
+        foreach (var c in s.Courses)
+            Console.WriteLine("Курс: " + c.title + " (Id: " + c.Id + ")");
+    }
+
+    public void PrintStudentsOfCourse(int id)
+    {
+        var c = FindCourse(id);
+        if (c == null) 
+        {
+            Console.WriteLine("Курс не найден.");
+            return;
+        }
+        if (c.Students.Count == 0) 
+        {
+            Console.WriteLine("На курс никто не записан.");
+            return;
+        }
+        foreach (var s in c.Students)
+            Console.WriteLine("Студент: " + s.name + " " + s.lastname + " (код " + s.Code + ")");
     }
 }
 
 class Program
 {
-    static List<Product> products = new List<Product>();
-    static int nextCode = 1;
+    static University kip = new University();
 
+    static int ReadInt(string prompt)
+    {
+        Console.Write(prompt);
+        return int.Parse(Console.ReadLine());
+    }
+
+    static void AddStudent()
+    {
+        int code = ReadInt("Код студента: ");
+        Console.Write("Имя: ");
+        string name = Console.ReadLine();
+        Console.Write("Фамилия: ");
+        string lastname = Console.ReadLine();
+        int year = ReadInt("Год зачисления: ");
+        kip.Students.Add(new Student(code, name, lastname, year));
+        Console.WriteLine("Студент добавлен.");
+    }
+
+    static void AddTeacher()
+    {
+        int id = ReadInt("Id преподавателя: ");
+        Console.Write("Имя: ");
+        string name = Console.ReadLine();
+        Console.Write("Фамилия: ");
+        string lastname = Console.ReadLine();
+        Console.Write("Кафедра: ");
+        string dep = Console.ReadLine();
+        kip.Teachers.Add(new Teacher(id, name, lastname, dep));
+        Console.WriteLine("Преподаватель добавлен.");
+    }
+
+    static void AddCourse()
+    {
+        Console.Write("Название курса: ");
+        kip.Courses.Add(new Course(Console.ReadLine()));
+        Console.WriteLine("Курс создан.");
+    }
+
+    static void PrintStudentInfo()
+    {
+        var s = kip.FindStudent(ReadInt("Код студента: "));
+        if (s == null) 
+        {
+            Console.WriteLine("Студент не найден.");
+            return;
+        }
+        s.PrintInfo();
+    }
+
+    static void PrintTeacherInfo()
+    {
+        var t = kip.FindTeacher(ReadInt("Id преподавателя: "));
+        if (t == null) 
+        {
+            Console.WriteLine("Преподаватель не найден.");
+            return;
+        }
+        t.PrintInfo();
+    }
+
+    static void PrintCourseInfo()
+    {
+        var c = kip.FindCourse(ReadInt("Id курса: "));
+        if (c == null) 
+        {
+            Console.WriteLine("Курс не найден.");
+            return;
+        }
+        c.PrintInfo();
+    }
+
+    static void EnrollStudent()
+    {
+        var s = kip.FindStudent(ReadInt("Код студента: "));
+        if (s == null) 
+        {
+            Console.WriteLine("Студент не найден.");
+            return;
+        }
+        var c = kip.FindCourse(ReadInt("Id курса: "));
+        if (c == null) 
+        { 
+            Console.WriteLine("Курс не найден.");
+            return;
+        }
+        s.Enroll(c);
+        Console.WriteLine("Студент записан на курс.");
+    }
+
+    static void AssignTeacher()
+    {
+        var t = kip.FindTeacher(ReadInt("Id преподавателя: "));
+        if (t == null) 
+        {
+            Console.WriteLine("Преподаватель не найден.");
+            return;
+        }
+        var c = kip.FindCourse(ReadInt("Id курса: "));
+        if (c == null) 
+        {
+            Console.WriteLine("Курс не найден.");
+            return;
+        }
+        c.AssignTeacher(t);
+        Console.WriteLine("Преподаватель назначен на курс.");
+    }
 
     static void Main()
     {
-        AddProduct("Война и мир", "Лев Толстой", 1869, 1200, Category.Фантастика);
-        AddProduct("Анна Каренина", "Лев Толстой", 1877, 950, Category.Детектив);
-        AddProduct("Воскресение", "Лев Толстой", 1899, 800, Category.Фантастика);
-        AddProduct("Преступление и наказание", "Фёдор Достоевский", 1866, 1100, Category.Детектив);
-        AddProduct("Идиот", "Фёдор Достоевский", 1869, 1000, Category.Ужасы);
-
         while (true)
-        {
-            Console.WriteLine("     МАГАЗИН");
-            Console.WriteLine("1. Добавить книгу");
-            Console.WriteLine("2. Удалить книгу");
-            Console.WriteLine("3. Поиск книги");
-            Console.WriteLine("4. Сортировка по авторам");
-            Console.WriteLine("5. Сортировка по годам");
-            Console.WriteLine("6. Вывести все книги");
-            Console.WriteLine("7. Минимальная цена книги и максимальная");
-            Console.WriteLine("8. Количество книг каждого автора");
-            Console.WriteLine("0. Выход");
-            Console.Write("Выберите команду: ");
-
-            string choice = Console.ReadLine();
-
-            if (choice == "1")
-            {
-                CommandAdd();
-            }
-            else if (choice == "2")
-            {
-                CommandDelete();
-            }
-            else if (choice == "3")
-            {
-                CommandSearch();
-            }
-            else if (choice == "4")
-            {
-                SortAuthor();
-            }
-            else if (choice == "5")
-            {
-                SortYear();
-            }
-            else if (choice == "6")
-            {
-                CommandShowAll();
-            }
-            else if (choice == "7")
-            {
-                MinMax();
-            }
-            else if (choice == "8")
-            {
-                CountAuthor();
-            }
-            else if (choice == "0")
-            {
-                break;
-            }
-            else
-            {
-                Console.WriteLine("Нет такой команды.");
-            }
-        }
-
-        Console.WriteLine("Программа завершена.");
-    }
-
-    static void CommandAdd()
-    {
-        Console.Write("Введите название: ");
-        string name = Console.ReadLine();
-
-        Console.WriteLine("Введите автора: ");
-        string author = Console.ReadLine();
-
-        Console.WriteLine("Введите год издания: ");
-        if (int.TryParse(Console.ReadLine(), out int year) == false || (year / 1000 <= 1 || year / 1000 >= 2))
-        {
-            Console.WriteLine("Число введено некорректно");
-            return;
-        }
-
-        Console.WriteLine("Введите цену: ");
-        int.TryParse(Console.ReadLine(), out int price);
-        if (price < 0)
-        {
-            Console.WriteLine("Цена не может быть отрицательной.");
-            return;
-        }
-
-        Console.Write("Жанр (1-Фантастика, 2-Детектив, 3-Ужасы): ");
-        Category category = (Category)int.Parse(Console.ReadLine());
-
-        if (category == 0)
-        {
-            Console.WriteLine("Категория не выбрана.");
-            return;
-        }
-        AddProduct(name, author, year, price, category);
-        Console.WriteLine("Товар добавлен.");
-    }
-
-    static void AddProduct( string name, string author, int year, int price, Category category)
-    {
-        string code = nextCode.ToString();
-        nextCode = nextCode + 1;
-
-        Product product = new Product(code, name, author, year, price, category);
-        products.Add(product);
-    }
-
-    public static void CommandDelete()
-    {
-        Console.Write("Введите код товара для удаления: ");
-        string code = Console.ReadLine();
-
-        int index = -1;
-
-        for (int i = 0; i < products.Count; i++)
-        {
-            if (products[i].Code == code)
-            {
-                index = i;
-                break;
-            }
-        }
-
-        if (index == -1)
-        {
-            Console.WriteLine("Товар с таким кодом не найден.");
-            return;
-        }
-
-        Console.WriteLine($"Товар {products[index].Name} удалён.");
-        products.RemoveAt(index);
-    }
-    static void CommandSearch()
-    {
-        Console.Write("Введите код или название товара или категорию (Электроника, Продукты, Одежда): ");
-        string query = Console.ReadLine();
-
-        bool found = false;
-
-        for (int i = 0; i < products.Count; i++)
-        {
-            if (products[i].Code == query || products[i].Name == query || products[i].Category.ToString() == query)
-            {
-                products[i].PrintInfo();
-                found = true;
-            }
-        }
-
-        if (!found)
-        {
-            Console.WriteLine("Товар не найден.");
-        }
-    }
-
-    static void CommandShowAll()
-    {
-        if (products.Count == 0)
-        {
-            Console.WriteLine("Список товаров пуст.");
-            return;
-        }
-
-        Console.WriteLine("           СПИСОК КНИГ");
-
-        for (int i = 0; i < products.Count; i++)
-        {
-            products[i].PrintInfo();
-        }
-    }
-
-    static void MinMax()
-    {
-        var maxProduct = products.Max(x => x.Price);
-        var minProduct = products.Min(x => x.Price);
-        Console.WriteLine("Минимально стоящая книга: ");
-        products.First(m=>m.Price > maxProduct).PrintInfo();
-        foreach (var product in products)
-        {
-            if (product.Price == maxProduct || product.Price == minProduct)
-            {
-                product.PrintInfo();
-            }
-        }   
-    }
-
-    static void SortAuthor()
-    {
-        var sortAuthor = products.OrderBy(x => x.Author);
-        foreach (var p in sortAuthor)
-        {
-            p.PrintInfo();
-        }
-    }
-
-    static void SortYear()
-    {
-        var sortYear = products.OrderBy(x => x.Year);
-        foreach (var p in sortYear)
         { 
-            p.PrintInfo(); 
-        }
-    }
-    
-    static void CountAuthor()
-    {
-        var groups = products.GroupBy(x => x.Author);
-        foreach (var group in groups)
-        {
-            Console.WriteLine($"{group.Key}: {group.Count()} книг");
+            Console.WriteLine("1. Добавить студента");
+            Console.WriteLine("2. Просмотреть информацию о студенте");
+            Console.WriteLine("3. Список всех студентов");
+            Console.WriteLine("4. Добавить преподавателя");
+            Console.WriteLine("5. Просмотреть информацию о преподавателе");
+            Console.WriteLine("6. Список всех преподавателей");
+            Console.WriteLine("7. Создать курс");
+            Console.WriteLine("8. Просмотреть информацию о курсе");
+            Console.WriteLine("9. Список всех курсов");
+            Console.WriteLine("10. Записать студента на курс");
+            Console.WriteLine("11. Курсы студента");
+            Console.WriteLine("12. Студенты на курсе");
+            Console.WriteLine("13. Назначить преподавателя на курс");
+            Console.WriteLine("0. Выход");
+            Console.Write("Выберите пункт: ");
+
+            switch (Console.ReadLine())
+            {
+                case "1": AddStudent(); 
+                    break;
+                case "2": PrintStudentInfo();
+                    break;
+                case "3": kip.PrintAllStudents(); 
+                    break;
+                case "4": AddTeacher(); 
+                    break;
+                case "5": PrintTeacherInfo(); 
+                    break;
+                case "6": kip.PrintAllTeachers(); 
+                    break;
+                case "7": AddCourse(); 
+                    break;
+                case "8": PrintCourseInfo();
+                    break;
+                case "9": kip.PrintAllCourses();
+                    break;
+                case "10": EnrollStudent();
+                    break;
+                case "11": kip.PrintCoursesOfStudent(ReadInt("Код студента: "));
+                    break;
+                case "12": kip.PrintStudentsOfCourse(ReadInt("Id курса: "));
+                    break;
+                case "13": AssignTeacher();
+                    break;
+                case "0": return;
+
+                default: Console.WriteLine("Неверный пункт меню."); break;
+            }
+            Console.WriteLine();
         }
     }
 }
