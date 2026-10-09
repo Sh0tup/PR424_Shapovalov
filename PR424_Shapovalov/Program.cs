@@ -18,13 +18,13 @@ public class Weapon
 public class Armor
 {
     public string Name { get; set; }
-    public decimal Defens {  get; set; }
+    public decimal Defense {  get; set; }
     public bool Magic { get; set; }
 
-    public Armor(string name, decimal defens, bool magic)
+    public Armor(string name, decimal defense, bool magic)
     {
         Name = name;
-        Defens = defens;
+        Defense = defense;
         Magic = magic;
     }
 }
@@ -44,6 +44,19 @@ public class Hero
         Armor = armor;
     }
 
+}
+public abstract class Enemy
+{
+    public abstract int Health { get; set; }
+    public abstract int Attack { get; set; }
+    public abstract int Defense { get; set; }
+}
+
+public class Goblin : Enemy
+{
+    public override int Health { get; set; }
+    public override int Attack { get; set; }
+    public override int Defense { get; set; }
 }
 
 namespace PR424_Shapovalov
