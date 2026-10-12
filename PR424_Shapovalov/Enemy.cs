@@ -11,6 +11,7 @@ namespace PR424_Shapovalov
         public virtual bool IgnoresArmor => false;
         public virtual decimal FreezeChance => 0m;
         public virtual decimal CritChance => 0m;
+        public bool IsAlive => Health > 0;
     }
 
     public class Goblin : Enemy
