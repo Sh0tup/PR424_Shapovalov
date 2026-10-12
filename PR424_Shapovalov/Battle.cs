@@ -49,14 +49,14 @@ namespace PR424_Shapovalov
                     else
                     {
                         isDefending = true;
-                        Console.WriteLine("Вы стреляете из-за щита (урон снижен вдвое).");
+                        Console.WriteLine("Вы стреляете в оборонительной стойке (урон снижен вдвое).");
                         HeroAttack(hero, enemy, 0.5m);
                         if (!enemy.IsAlive) break;
                     }
                 }
                 EnemyAttack(hero, enemy, ref heroFrozen, isDefending);
 
-                Console.WriteLine($"  Ваше HP: {hero.Health}/{hero.MaxHealth} | HP врага: {enemy.Health}");
+                Console.WriteLine($"  Ваше HP: {hero.Health}/{hero.MaxHealth}\n HP врага: {enemy.Health}");
             }
 
             Console.WriteLine(hero.IsAlive ? "Враг повержен!" : "Вы погибли...");
@@ -66,7 +66,7 @@ namespace PR424_Shapovalov
             while (true)
             {
                 Console.Write(hasRangedWeapon
-                    ? "Ваш ход (1 — атаковать, 2 — стойка, 3 — выстрел из-за щита [-50% урона]): "
+                    ? "Ваш ход (1 — атаковать, 2 — стойка, 3 — выстрел в оборонительной стойке [-50% урона]): "
                     : "Ваш ход (1 — атаковать, 2 — защищаться): ");
                 string input = Console.ReadLine();
                 if (input == "1") return 1;
@@ -83,7 +83,7 @@ namespace PR424_Shapovalov
             int damage = Math.Max(1, (int)Math.Round(raw * (isCrit ? 2m : 1m)));
             enemy.Health -= damage;
 
-            Console.WriteLine(isCrit? $"  КРИТ! Вы наносите {damage} урона!" : $"  Вы наносите {damage} урона.");
+            Console.WriteLine(isCrit? $"КРИТ! Вы наносите {damage} урона!" : $"  Вы наносите {damage} урона.");
         }
 
         private static void EnemyAttack(Hero hero, Enemy enemy, ref bool heroFrozen, bool heroDefending)
@@ -92,12 +92,12 @@ namespace PR424_Shapovalov
             {
                 if (hero.Armor.Magic)
                 {
-                    Console.WriteLine("  Магическая броня защитила вас от заморозки!");
+                    Console.WriteLine("Магическая броня защитила вас от заморозки!");
                 }
                 else
                 {
                     heroFrozen = true;
-                    Console.WriteLine("  Враг замораживает вас!");
+                    Console.WriteLine("Враг замораживает вас!");
                 }
             }
 
@@ -108,7 +108,7 @@ namespace PR424_Shapovalov
             {
                 int dmg = Math.Max(1, (int)Math.Round(raw));
                 hero.TakeDamage(dmg);
-                Console.WriteLine($"  Враг игнорирует броню и наносит {dmg} урона!");
+                Console.WriteLine($"Враг игнорирует броню и наносит {dmg} урона!");
                 return;
             }
 
@@ -118,7 +118,7 @@ namespace PR424_Shapovalov
             int damage = Math.Max(1, (int)Math.Round(raw * (1 - blocked / 100m)));
             hero.TakeDamage(damage);
 
-            Console.WriteLine(isCrit ? $"  Враг наносит КРИТИЧЕСКИЙ удар: {damage} урона (блок {blocked}%)!" : $"  Враг наносит {damage} урона (блок {blocked}%).");
+            Console.WriteLine(isCrit ? $"Враг наносит КРИТИЧЕСКИЙ удар: {damage} урона (блок {blocked}%)!" : $"  Враг наносит {damage} урона (блок {blocked}%).");
         }
     }
 }

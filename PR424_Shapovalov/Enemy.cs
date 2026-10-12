@@ -105,9 +105,9 @@ namespace PR424_Shapovalov
 
         public static Enemy Generate()
         {
-            int hp = rnd.Next(40, 81);
-            int atk = rnd.Next(8, 18);
-            int def = rnd.Next(5, 21);
+            int hp = rnd.Next(20, 40);
+            int atk = rnd.Next(8, 15);
+            int def = rnd.Next(0, 15);
             int roll = rnd.Next(100);
 
             if (roll < 10)

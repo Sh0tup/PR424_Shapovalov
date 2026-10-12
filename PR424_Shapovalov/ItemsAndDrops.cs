@@ -39,7 +39,7 @@ namespace PR424_Shapovalov
         {
             string[] names = { "Меч", "Топор", "Лук", "Кинжал", "Боевой посох" };
             string name = names[rnd.Next(names.Length)];
-            int attack = rnd.Next(10, 30);
+            int attack = rnd.Next(10, 25);
             bool range = rnd.Next(2) == 0;
             return new Weapon(name, attack, range);
         }
@@ -48,7 +48,7 @@ namespace PR424_Shapovalov
         {
             string[] names = { "Кожаный доспех", "Кольчуга", "Латы", "Мантия мага" };
             string name = names[rnd.Next(names.Length)];
-            decimal defense = rnd.Next(20, 100);
+            decimal defense = rnd.Next(20, 70);
             bool magic = rnd.Next(2) == 0;
             return new Armor(name, defense, magic);
         }
